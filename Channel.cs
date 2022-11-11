@@ -2,24 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Channel{
+public class Channel
+{
 
     public List<Show> showList;
-    public string name;
+    public int id;
     public float size;
+    public float fill;
     
 
     public Channel()
     {
         showList = new List<Show>();
-        name = "unNamedChannel";
+        id = 0;
         size = 0;
     }
-    public Channel(string name, float size)
+    public Channel(int id, float size)
     {
         this.showList = new List<Show>();
-        this.name = name;
+        this.id = id;
         this.size = size;
     }
+    public Channel(List<Show> showlist, int id, float size, float fill)
+    {
+        this.showList = showlist;
+        this.id = id;
+        this.size = size;
+        this.fill = fill;
+    }
+    public void displayChannel()
+    {
+        Debug.Log("Channel: " + id + " Fill: " + fill);
+        foreach(Show s in showList)
+        {
+            Debug.Log(s.name + ": " + s.length);
+        }
+    }
+
+
 
 }

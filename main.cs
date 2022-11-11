@@ -5,7 +5,7 @@ using UnityEngine;
 public class main : MonoBehaviour
 {
     List<Show> fullList;
-    List<Channel> channelList;
+    float defaultSize;
 
     void Start()
     {
@@ -18,16 +18,71 @@ public class main : MonoBehaviour
         Show g = new Show("g", 3, new Color(2, 3, 4));
         Show h = new Show("h", 2, new Color(2, 3, 4));
         Show i = new Show("i", 1, new Color(2, 3, 4));
-        Channel x = new Channel("x", 10);
-        channelList = new List<Channel>()
-        {x};
+        defaultSize = 10;
+
         fullList = new List<Show>()
         {a, b, c, d, e, f, g, h, i };
 
+        List<Channel> greedyResult = Greedy();
+
+        foreach(Channel greedy in greedyResult)
+        {
+            greedy.displayChannel();
+        }
+        
+
+
+
+
     }
 
-    void Update()
+
+    private List<Channel> Greedy()
     {
-        Debug.Log(channelList[0].showList);
+        int channelId = 0;
+        List<Channel> channelList = new List<Channel>();
+        bool placed;
+        for (int i = 0; i < fullList.Count; i++)
+        {
+            placed = false;
+            if(channelList.Count != 0)
+            {
+                for (int j = 0; j < channelList.Count; j++)
+                {
+                    if (fullList[i].length <= channelList[j].size - channelList[j].fill)
+                    {
+                        channelList[j].showList.Add(fullList[i]);
+                        placed = true;
+                        channelList[j].fill += fullList[i].length;
+                        break;
+                    }
+                }
+            }
+            if (!placed)
+            {
+                channelList.Add(new Channel(new List<Show>() { fullList[i] }, channelId, defaultSize, fullList[i].length));
+                channelId++;
+
+                
+            }
+
+        }
+
+
+
+
+        return channelList;
+        
     }
+
+
+
+
+
+
+
+
+
+
+
 }
