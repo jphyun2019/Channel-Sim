@@ -15,9 +15,9 @@ public class Channel{
         name = "unNamedChannel";
         size = 0;
     }
-    public Channel(List<Show> showList, string name, float size)
+    public Channel(string name, float size)
     {
-        this.showList = showList;
+        this.showList = new List<Show>();
         this.name = name;
         this.size = size;
     }
