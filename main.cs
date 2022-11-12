@@ -149,7 +149,8 @@ public class main : MonoBehaviour
             {
                 if(temp[temp.Count-1].fill < bestRemainder)
                 {
-
+                    bestRemainder = temp[temp.Count - 1].fill;
+                    channelList = temp;
                 }
             }
             showlist.Add(showlist[0]);
