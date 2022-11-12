@@ -29,33 +29,39 @@ public class main : MonoBehaviour
         //fullList = new List<Show>()
         //{a, b, c, d, e, f, g, h, i };
 
-
-        float startTime = DateTime.Now.Millisecond/1000f + DateTime.Now.Second;
-
-        defaultSize = 15;
-        fullList = new List<Show>();
-        for(int i = 0; i < 80; i++)
+        for(int test = 0; test < 10; test++)
         {
-            fullList.Add(new Show(i.ToString(), UnityEngine.Random.Range(3f, 10.0f), Color.red));
+
+            defaultSize = 12;
+            fullList = new List<Show>();
+            for (int i = 0; i < 100; i++)
+            {
+                fullList.Add(new Show(i.ToString(), (UnityEngine.Random.Range(1f, 10.0f)), Color.red));
+            }
+
+            float greedyStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+            List<Channel> greedyResult = Greedy(fullList);
+            float greedyEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+
+
+            float greedyV2StartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+            List<Channel> greedyV2Result = GreedyV2();
+            float greedyV2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+
+
+            Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + (greedyEndTime - greedyStartTime) + " seconds \nGreedyV2: " + greedyV2Result.Count + " channels in " + (greedyV2EndTime - greedyV2StartTime) + " seconds");
+
+
+            //foreach(Channel greedy in greedyResult)
+            //{
+            //    greedy.displayChannel();
+            //}
+
+
+
         }
-
-
-        float midtime1 = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-        fullList = sortShows(fullList, 0, fullList.Count - 1);
-        float midtime2 = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-        List<Channel> greedyResult = Greedy();
-
-        foreach(Channel greedy in greedyResult)
-        {
-            greedy.displayChannel();
-        }
-
-        float endTime = DateTime.Now.Millisecond/1000f + DateTime.Now.Second;
-
-        Debug.Log(endTime - startTime + " seconds");
-        Debug.Log(midtime1 - startTime + " seconds");
-        Debug.Log(midtime2 - midtime1 + "seconds");
-        Debug.Log(endTime - midtime2 + "seconds");
     }
 
     public List<Show> sortShows(List<Show> list, int leftIndex, int rightIndex)
@@ -91,40 +97,81 @@ public class main : MonoBehaviour
         return list;
     }
 
-    private List<Channel> Greedy()
+    private List<Channel> Greedy(List<Show> inputList)
     {
         int channelId = 0;
         List<Channel> channelList = new List<Channel>();
         bool placed;
-        for (int i = 0; i < fullList.Count; i++)
+        for (int i = 0; i < inputList.Count; i++)
         {
             placed = false;
             if(channelList.Count != 0)
             {
                 for (int j = 0; j < channelList.Count; j++)
                 {
-                    if (fullList[i].length <= channelList[j].size - channelList[j].fill)
+                    if (inputList[i].length <= channelList[j].size - channelList[j].fill)
                     {
-                        channelList[j].showList.Add(fullList[i]);
+                        channelList[j].showList.Add(inputList[i]);
                         placed = true;
-                        channelList[j].fill += fullList[i].length;
+                        channelList[j].fill += inputList[i].length;
                         break;
                     }
                 }
             }
             if (!placed)
             {
-                channelList.Add(new Channel(new List<Show>() { fullList[i] }, channelId, defaultSize, fullList[i].length));
+                channelList.Add(new Channel(new List<Show>() { inputList[i] }, channelId, defaultSize, inputList[i].length));
                 channelId++;
-
-                
             }
 
         }
+        return channelList;
+    }
+
+    private List<Channel> GreedyV2()
+    {
+        List<Channel> channelList = new List<Channel>();
+        List<Show> showlist = fullList;
+        int bestChannel=-1;
+        float bestRemainder=-1;
+        for(int i = 0; i < fullList.Count; i++)
+        {
+            List<Channel> temp = Greedy(showlist);
+
+            if (temp.Count < bestChannel || bestChannel == -1)
+            {
+                bestChannel = temp.Count;
+                bestRemainder = temp[temp.Count - 1].fill;
+                channelList = temp;
+
+            }
+            else if(temp.Count == bestChannel)
+            {
+                if(temp[temp.Count-1].fill < bestRemainder)
+                {
+
+                }
+            }
+            showlist.Add(showlist[0]);
+            showlist.RemoveAt(0);
+        }
+        return channelList;
+    }
+
+
+
+    private List<Channel> ReverseFill(List<Show> inputList)
+    {
+        List<Channel> channelList = new List<Channel>();
+
+
+
 
         return channelList;
-        
     }
+
+
+
 
 
 
