@@ -32,15 +32,17 @@ public class main : MonoBehaviour
 
         float startTime = DateTime.Now.Millisecond/1000f + DateTime.Now.Second;
 
-        defaultSize = 45;
+        defaultSize = 15;
         fullList = new List<Show>();
-        for(int i = 0; i < 200000; i++)
+        for(int i = 0; i < 80; i++)
         {
-            fullList.Add(new Show(i.ToString(), UnityEngine.Random.Range(0.1f, 10.0f), Color.red));
+            fullList.Add(new Show(i.ToString(), UnityEngine.Random.Range(3f, 10.0f), Color.red));
         }
 
-        fullList = sortShows(fullList, 0, fullList.Count - 1);
 
+        float midtime1 = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+        fullList = sortShows(fullList, 0, fullList.Count - 1);
+        float midtime2 = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
         List<Channel> greedyResult = Greedy();
 
         foreach(Channel greedy in greedyResult)
@@ -51,7 +53,11 @@ public class main : MonoBehaviour
         float endTime = DateTime.Now.Millisecond/1000f + DateTime.Now.Second;
 
         Debug.Log(endTime - startTime + " seconds");
+        Debug.Log(midtime1 - startTime + " seconds");
+        Debug.Log(midtime2 - midtime1 + "seconds");
+        Debug.Log(endTime - midtime2 + "seconds");
     }
+
     public List<Show> sortShows(List<Show> list, int leftIndex, int rightIndex)
     {
         int i = leftIndex;
