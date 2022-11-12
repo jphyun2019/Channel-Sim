@@ -32,11 +32,12 @@ public class Channel
     }
     public void displayChannel()
     {
-        Debug.Log("Channel: " + id + " Fill: " + fill);
+        string summary = "Channel: " + id + " Fill: " + fill + "    ";
         foreach(Show s in showList)
         {
-            Debug.Log(s.name + ": " + s.length);
+            summary += s.length + ", ";
         }
+        Debug.Log(summary);
     }
 
 
