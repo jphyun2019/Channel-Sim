@@ -36,7 +36,7 @@ public class main : MonoBehaviour
             fullList = new List<Show>();
             for (int i = 0; i < 100; i++)
             {
-                fullList.Add(new Show(i.ToString(), (UnityEngine.Random.Range(1f, 10.0f)), Color.red));
+                fullList.Add(new Show(i.ToString(), (Mathf.Round(UnityEngine.Random.Range(1f, 10.0f))), Color.red));
             }
 
             float greedyStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
@@ -54,10 +54,7 @@ public class main : MonoBehaviour
             Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + (greedyEndTime - greedyStartTime) + " seconds \nGreedyV2: " + greedyV2Result.Count + " channels in " + (greedyV2EndTime - greedyV2StartTime) + " seconds");
 
 
-            //foreach(Channel greedy in greedyResult)
-            //{
-            //    greedy.displayChannel();
-            //}
+
 
 
 
