@@ -15,29 +15,32 @@ public class main : MonoBehaviour
 
     void Start()
     {
-        //Show a = new Show("a", 9, new Color(2, 3, 4));
-        //Show b = new Show("b", 8, new Color(2, 3, 4));
-        //Show c = new Show("c", 7, new Color(2, 3, 4));
-        //Show d = new Show("d", 6, new Color(2, 3, 4));
-        //Show e = new Show("e", 5, new Color(2, 3, 4));
-        //Show f = new Show("f", 4, new Color(2, 3, 4));
-        //Show g = new Show("g", 3, new Color(2, 3, 4));
-        //Show h = new Show("h", 2, new Color(2, 3, 4));
-        //Show i = new Show("i", 1, new Color(2, 3, 4));
-        //defaultSize = 10;
+        Show a = new Show("a", 5, new Color(2, 3, 4));
+        Show b = new Show("b", 3.7f, new Color(2, 3, 4));
+        Show c = new Show("c", 3.7f, new Color(2, 3, 4));
+        Show d = new Show("d", 3.5f, new Color(2, 3, 4));
+        Show e = new Show("e", 3.5f, new Color(2, 3, 4));
+        Show f = new Show("f", 3, new Color(2, 3, 4));
+        Show g = new Show("g", 2.6f, new Color(2, 3, 4));
+        Show h = new Show("h", 2.5f, new Color(2, 3, 4));
+        Show i = new Show("i", 2.5f, new Color(2, 3, 4));
+        defaultSize = 10;
 
-        //fullList = new List<Show>()
-        //{a, b, c, d, e, f, g, h, i };
+        fullList = new List<Show>()
+        {a, b, c, d, e, f, g, h, i };
 
-        for(int test = 0; test < 10; test++)
+        for (int test = 0; test < 10; test++)
         {
 
-            defaultSize = 12;
-            fullList = new List<Show>();
-            for (int i = 0; i < 100; i++)
-            {
-                fullList.Add(new Show(i.ToString(), (Mathf.Round(UnityEngine.Random.Range(1f, 10.0f))), Color.red));
-            }
+            defaultSize = 10;
+            //fullList = new List<Show>();
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    fullList.Add(new Show(i.ToString(), (Mathf.Round(UnityEngine.Random.Range(1f, 10.0f))), Color.red));
+            //}
+
+            //fullList = sortShows(fullList, 0, fullList.Count-1);
+
 
             float greedyStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
             List<Channel> greedyResult = Greedy(fullList);
@@ -51,7 +54,13 @@ public class main : MonoBehaviour
 
 
 
-            Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + (greedyEndTime - greedyStartTime) + " seconds \nGreedyV2: " + greedyV2Result.Count + " channels in " + (greedyV2EndTime - greedyV2StartTime) + " seconds");
+            float snakeStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+            List<Channel> snakeResult = Snake(fullList);
+            float snake2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+
+
+            Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + (greedyEndTime - greedyStartTime) + " seconds  GreedyV2: " + greedyV2Result.Count + " channels in " + (greedyV2EndTime - greedyV2StartTime) + " seconds    Snake: " + snakeResult.Count + " channels in " + (snake2EndTime - snakeStartTime) + " seconds");
 
 
 
@@ -152,6 +161,7 @@ public class main : MonoBehaviour
             }
             showlist.Add(showlist[0]);
             showlist.RemoveAt(0);
+
         }
         return channelList;
     }
@@ -170,7 +180,34 @@ public class main : MonoBehaviour
 
 
 
+    private List<Channel> Snake(List<Show> inputList)
+    {
+        List<Channel> channelList = new List<Channel>();
+        int channelId = 0;
+        List<Show>tempInputList = inputList;
 
+
+        while (tempInputList.Count > 0)
+        {
+            Channel temp = new Channel(new List<Show>() {tempInputList[0] }, channelId, defaultSize, tempInputList[0].length);
+            tempInputList.RemoveAt(0);
+            if(tempInputList.Count!= 0)
+            {
+                if ((temp.size - temp.fill) > tempInputList[tempInputList.Count-1].length)
+                {
+                    temp.showList.Add(tempInputList[tempInputList.Count - 1]);
+                    tempInputList.RemoveAt(tempInputList.Count - 1);
+                }
+            }
+
+            channelList.Add(temp);
+            channelId++;
+
+
+            
+        }
+        return channelList;
+    }
 
 
 
