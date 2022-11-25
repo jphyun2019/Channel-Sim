@@ -15,31 +15,36 @@ public class main : MonoBehaviour
 
     void Start()
     {
-        Show a = new Show("a", 5, new Color(2, 3, 4));
-        Show b = new Show("b", 3.7f, new Color(2, 3, 4));
-        Show c = new Show("c", 3.7f, new Color(2, 3, 4));
-        Show d = new Show("d", 3.5f, new Color(2, 3, 4));
-        Show e = new Show("e", 3.5f, new Color(2, 3, 4));
-        Show f = new Show("f", 3, new Color(2, 3, 4));
-        Show g = new Show("g", 2.6f, new Color(2, 3, 4));
-        Show h = new Show("h", 2.5f, new Color(2, 3, 4));
-        Show i = new Show("i", 2.5f, new Color(2, 3, 4));
-        defaultSize = 10;
+        //Show a = new Show("a", 5, new Color(2, 3, 4));
+        //Show b = new Show("b", 3.7f, new Color(2, 3, 4));
+        //Show c = new Show("c", 3.7f, new Color(2, 3, 4));
+        //Show d = new Show("d", 3.5f, new Color(2, 3, 4));
+        //Show e = new Show("e", 3.5f, new Color(2, 3, 4));
+        //Show f = new Show("f", 3, new Color(2, 3, 4));
+        //Show g = new Show("g", 2.6f, new Color(2, 3, 4));
+        //Show h = new Show("h", 2.5f, new Color(2, 3, 4));
+        //Show i = new Show("i", 2.5f, new Color(2, 3, 4));
+        //defaultSize = 10;
 
-        fullList = new List<Show>()
-        {a, b, c, d, e, f, g, h, i };
+        //fullList = new List<Show>()
+        //{a, b, c, d, e, f, g, h, i };
 
-        for (int test = 0; test < 10; test++)
+
+
+        List<int> scoreboard = new List<int>() {0,0,0,0};
+
+
+        for (int test = 0; test < 200; test++)
         {
 
             defaultSize = 10;
-            //fullList = new List<Show>();
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    fullList.Add(new Show(i.ToString(), (Mathf.Round(UnityEngine.Random.Range(1f, 10.0f))), Color.red));
-            //}
+            fullList = new List<Show>();
+            for (int i = 0; i <100; i++)
+            {
+                fullList.Add(new Show(i.ToString(), ((UnityEngine.Random.Range(0f, 10f))), Color.red));
+            }
 
-            //fullList = sortShows(fullList, 0, fullList.Count-1);
+            fullList = sortShows(fullList, 0, fullList.Count - 1);
 
 
             float greedyStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
@@ -53,21 +58,65 @@ public class main : MonoBehaviour
             float greedyV2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
 
 
-
             float snakeStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
             List<Channel> snakeResult = Snake(fullList);
             float snake2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
 
 
-
-            Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + (greedyEndTime - greedyStartTime) + " seconds  GreedyV2: " + greedyV2Result.Count + " channels in " + (greedyV2EndTime - greedyV2StartTime) + " seconds    Snake: " + snakeResult.Count + " channels in " + (snake2EndTime - snakeStartTime) + " seconds");
-
-
-
+            float reverseStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+            List<Channel> reverseResult = ReverseFill(fullList);
+            float reverseEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
 
 
 
+            Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + (greedyEndTime - greedyStartTime) + " seconds  GreedyV2: " + greedyV2Result.Count + " channels in " + (greedyV2EndTime - greedyV2StartTime) + " seconds    Snake: " + snakeResult.Count + " channels in " + (snake2EndTime - snakeStartTime) + " seconds   Reverse Fill: " + reverseResult.Count + " channels in " + (reverseEndTime - reverseStartTime) + " seconds");
+
+
+            List<List<Channel>> allSorts = new List<List<Channel>>() {greedyResult, greedyV2Result, snakeResult, reverseResult};
+
+            int bestChannel = -1;
+            float bestRemainder = -1;
+
+            int counter = 0;
+            List<int> winner = new List<int>() { };
+
+            foreach (List<Channel> sort in allSorts)
+            {
+                if (sort.Count < bestChannel || bestChannel == -1)
+                {
+                    bestChannel = sort.Count;
+                    bestRemainder = sort[sort.Count - 1].fill;
+                    winner.Clear();
+                    winner.Add(counter);
+
+                }
+                else if (sort.Count == bestChannel)
+                {
+                    if (sort[sort.Count - 1].fill < bestRemainder)
+                    {
+                        bestRemainder = sort[sort.Count - 1].fill;
+                        winner.Clear();
+                        winner.Add(counter);
+                    }
+                    else if(sort[sort.Count - 1].fill == bestRemainder)
+                    {
+                        winner.Add(counter);
+                    }
+                }
+                counter++;
+            }
+
+
+            foreach(int w in winner)
+            {
+                scoreboard[w] += 1;
+            }
         }
+
+
+        Debug.Log("Greedy: " + scoreboard[0] + "    GreedyV2: " + scoreboard[1] + "    Snake: " + scoreboard[2] + "    Reverse Fill: " + scoreboard[3]);
+
+
     }
 
     public List<Show> sortShows(List<Show> list, int leftIndex, int rightIndex)
@@ -171,9 +220,47 @@ public class main : MonoBehaviour
     private List<Channel> ReverseFill(List<Show> inputList)
     {
         List<Channel> channelList = new List<Channel>();
+        int channelId = 0;
+        List<Show> tempInputList = new List<Show>();
 
+        foreach(Show s in inputList)
+        {
+            tempInputList.Add(s);
+        }
 
+        int doings = 0;
+        while (tempInputList.Count > 0)
+        {
+            Channel temp = new Channel(new List<Show>() { tempInputList[0] }, channelId, defaultSize, tempInputList[0].length);
 
+            if(tempInputList.Count != 0)
+            {
+                int counter = tempInputList.Count - 1;
+                while ((temp.size - temp.fill) > tempInputList[counter].length)
+                {
+                    doings++;
+                    temp.showList.Add(tempInputList[counter]);
+                    temp.fill += tempInputList[counter].length;
+
+                    if (counter > 1)
+                    {
+                        counter--;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                foreach(Show s in temp.showList)
+                {
+                    tempInputList.Remove(s);
+                }
+
+            }
+
+            channelList.Add(temp);
+            channelId++;
+        }
 
         return channelList;
     }
@@ -184,7 +271,12 @@ public class main : MonoBehaviour
     {
         List<Channel> channelList = new List<Channel>();
         int channelId = 0;
-        List<Show>tempInputList = inputList;
+        List<Show> tempInputList = new List<Show>();
+
+        foreach (Show s in inputList)
+        {
+            tempInputList.Add(s);
+        }
 
 
         while (tempInputList.Count > 0)
@@ -196,6 +288,7 @@ public class main : MonoBehaviour
                 if ((temp.size - temp.fill) > tempInputList[tempInputList.Count-1].length)
                 {
                     temp.showList.Add(tempInputList[tempInputList.Count - 1]);
+                    temp.fill += tempInputList[tempInputList.Count - 1].length;
                     tempInputList.RemoveAt(tempInputList.Count - 1);
                 }
             }
@@ -203,8 +296,6 @@ public class main : MonoBehaviour
             channelList.Add(temp);
             channelId++;
 
-
-            
         }
         return channelList;
     }
