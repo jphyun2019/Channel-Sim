@@ -31,17 +31,17 @@ public class main : MonoBehaviour
 
 
 
-        List<int> scoreboard = new List<int>() {0,0,0,0};
+        List<int> scoreboard = new List<int>() {0,0,0,0,0};
 
 
-        for (int test = 0; test < 200; test++)
+        for (int test = 0; test < 400; test++)
         {
 
             defaultSize = 10;
             fullList = new List<Show>();
-            for (int i = 0; i <100; i++)
+            for (int i = 0; i <200; i++)
             {
-                fullList.Add(new Show(i.ToString(), ((UnityEngine.Random.Range(0f, 10f))), Color.red));
+                fullList.Add(new Show(i.ToString(), ((UnityEngine.Random.Range(2f, 5f))), Color.red));
             }
 
             fullList = sortShows(fullList, 0, fullList.Count - 1);
@@ -68,11 +68,15 @@ public class main : MonoBehaviour
             float reverseEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
 
 
+            float reverseV2StartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+            List<Channel> reverseV2Result = ReverseFillV2(fullList);
+            float reverseV2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
 
-            Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + (greedyEndTime - greedyStartTime) + " seconds  GreedyV2: " + greedyV2Result.Count + " channels in " + (greedyV2EndTime - greedyV2StartTime) + " seconds    Snake: " + snakeResult.Count + " channels in " + (snake2EndTime - snakeStartTime) + " seconds   Reverse Fill: " + reverseResult.Count + " channels in " + (reverseEndTime - reverseStartTime) + " seconds");
+
+            Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + Math.Round(greedyEndTime - greedyStartTime, 5) + " seconds  GreedyV2: " + greedyV2Result.Count + " channels in " + Math.Round((greedyV2EndTime - greedyV2StartTime), 5) + " seconds    Snake: " + snakeResult.Count + " channels in " + Math.Round((snake2EndTime - snakeStartTime), 5) + " seconds   Reverse Fill: " + reverseResult.Count + " channels in " + Math.Round((reverseEndTime - reverseStartTime), 5) + " seconds   Reverse Fill V2: " + reverseV2Result.Count + " channels in " + Math.Round((reverseV2EndTime - reverseV2StartTime), 5) + " seconds");
 
 
-            List<List<Channel>> allSorts = new List<List<Channel>>() {greedyResult, greedyV2Result, snakeResult, reverseResult};
+            List<List<Channel>> allSorts = new List<List<Channel>>() {greedyResult, greedyV2Result, snakeResult, reverseResult, reverseV2Result};
 
             int bestChannel = -1;
             float bestRemainder = -1;
@@ -114,7 +118,7 @@ public class main : MonoBehaviour
         }
 
 
-        Debug.Log("Greedy: " + scoreboard[0] + "    GreedyV2: " + scoreboard[1] + "    Snake: " + scoreboard[2] + "    Reverse Fill: " + scoreboard[3]);
+        Debug.Log("Greedy: " + scoreboard[0] + "    GreedyV2: " + scoreboard[1] + "    Snake: " + scoreboard[2] + "    Reverse Fill: " + scoreboard[3] + "    ReverseV2 Fill: " + scoreboard[4]);
 
 
     }
@@ -217,7 +221,7 @@ public class main : MonoBehaviour
 
 
 
-    private List<Channel> ReverseFill(List<Show> inputList)
+    private List<Channel> ReverseFillV2(List<Show> inputList)
     {
         List<Channel> channelList = new List<Channel>();
         int channelId = 0;
@@ -236,7 +240,8 @@ public class main : MonoBehaviour
             if(tempInputList.Count != 0)
             {
                 int counter = tempInputList.Count - 1;
-                while ((temp.size - temp.fill) > tempInputList[counter].length)
+                float difference = temp.size - temp.fill;
+                while (difference > tempInputList[counter].length)
                 {
                     doings++;
                     temp.showList.Add(tempInputList[counter]);
@@ -250,11 +255,58 @@ public class main : MonoBehaviour
                     {
                         break;
                     }
+                    difference = temp.size - temp.fill;
                 }
-                foreach(Show s in temp.showList)
+
+                //temp.displayChannel();
+                temp.showList.Reverse();
+
+
+
+                int range = temp.showList.Count - 2;
+                if(range > 0)
+                {
+                    for (int i = range; i > 0; i--)
+                    {
+                        difference = temp.size - temp.fill;
+
+                        int differenceCounter = tempInputList.Count - temp.showList.Count;
+
+                        if (differenceCounter > 0)
+                        {
+                            while (tempInputList[differenceCounter].length - temp.showList[i].length < difference)
+                            {
+                                differenceCounter--;
+
+                                if (differenceCounter == 0)
+                                {
+                                    break;
+                                }
+
+                            }
+                        }
+
+                        if (differenceCounter != (tempInputList.Count - temp.showList.Count))
+
+                        {
+                            //Debug.Log(temp.showList[i].length + " -> " + tempInputList[differenceCounter + 1].length);
+                            temp.fill -= temp.showList[i].length;
+                            temp.showList.RemoveAt(i);
+                            temp.showList.Add(tempInputList[differenceCounter + 1]);
+                            temp.fill += tempInputList[differenceCounter + 1].length;
+                            tempInputList.RemoveAt(differenceCounter + 1);
+
+                        }
+                    }
+                }
+                
+
+                //temp.displayChannel();
+                foreach (Show s in temp.showList)
                 {
                     tempInputList.Remove(s);
                 }
+
 
             }
 
@@ -265,6 +317,56 @@ public class main : MonoBehaviour
         return channelList;
     }
 
+
+    private List<Channel> ReverseFill(List<Show> inputList)
+    {
+        List<Channel> channelList = new List<Channel>();
+        int channelId = 0;
+        List<Show> tempInputList = new List<Show>();
+
+        foreach (Show s in inputList)
+        {
+            tempInputList.Add(s);
+        }
+
+        int doings = 0;
+        while (tempInputList.Count > 0)
+        {
+            Channel temp = new Channel(new List<Show>() { tempInputList[0] }, channelId, defaultSize, tempInputList[0].length);
+
+            if (tempInputList.Count != 0)
+            {
+                int counter = tempInputList.Count - 1;
+                float difference = temp.size - temp.fill;
+                while (difference > tempInputList[counter].length)
+                {
+                    doings++;
+                    temp.showList.Add(tempInputList[counter]);
+                    temp.fill += tempInputList[counter].length;
+
+                    if (counter > 1)
+                    {
+                        counter--;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    difference = temp.size - temp.fill;
+                }
+
+                foreach (Show s in temp.showList)
+                {
+                    tempInputList.Remove(s);
+                }
+            }
+
+            channelList.Add(temp);
+            channelId++;
+        }
+
+        return channelList;
+    }
 
 
     private List<Channel> Snake(List<Show> inputList)
