@@ -34,14 +34,14 @@ public class main : MonoBehaviour
         List<int> scoreboard = new List<int>() {0,0,0,0,0};
 
 
-        for (int test = 0; test < 400; test++)
+        for (int test = 0; test < 500; test++)
         {
 
             defaultSize = 10;
             fullList = new List<Show>();
-            for (int i = 0; i <200; i++)
+            for (int i = 0; i <18; i++)
             {
-                fullList.Add(new Show(i.ToString(), ((UnityEngine.Random.Range(2f, 5f))), Color.red));
+                fullList.Add(new Show(i.ToString(), UnityEngine.Random.Range(4f, 9f), Color.red));
             }
 
             fullList = sortShows(fullList, 0, fullList.Count - 1);
@@ -114,6 +114,18 @@ public class main : MonoBehaviour
             foreach(int w in winner)
             {
                 scoreboard[w] += 1;
+            }
+
+
+            if (winner.Contains(4))
+            {
+                foreach(Channel c in greedyV2Result)
+                {
+                    c.displayChannel();
+                }
+
+                foreach (Channel c in reverseV2Result)
+                    c.displayChannel();
             }
         }
 
@@ -261,8 +273,6 @@ public class main : MonoBehaviour
                 //temp.displayChannel();
                 temp.showList.Reverse();
 
-
-
                 int range = temp.showList.Count - 2;
                 if(range > 0)
                 {
@@ -306,7 +316,6 @@ public class main : MonoBehaviour
                 {
                     tempInputList.Remove(s);
                 }
-
 
             }
 
