@@ -29,13 +29,21 @@ public class main : MonoBehaviour
         //fullList = new List<Show>()
         //{a, b, c, d, e, f, g, h, i };
 
+        int testCount = 500;
 
+        List<float> scoreboard = new List<float>() {0,0,0,0,0};
+        float testStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
 
-        List<int> scoreboard = new List<int>() {0,0,0,0,0};
-
-
-        for (int test = 0; test < 500; test++)
+        for (int test = 0; test < testCount; test++)
         {
+
+
+
+
+
+
+
+
 
             defaultSize = 10;
             fullList = new List<Show>();
@@ -78,59 +86,67 @@ public class main : MonoBehaviour
 
             List<List<Channel>> allSorts = new List<List<Channel>>() {greedyResult, greedyV2Result, snakeResult, reverseResult, reverseV2Result};
 
-            int bestChannel = -1;
-            float bestRemainder = -1;
+            //int bestChannel = -1;
+            //float bestRemainder = -1;
 
-            int counter = 0;
-            List<int> winner = new List<int>() { };
+            //int counter = 0;
 
-            foreach (List<Channel> sort in allSorts)
+
+
+
+            float best;
+            int place = 4;
+
+            List<List<Channel>> placed = new List<List<Channel>>(){ };
+            while (placed.Count < 5)
             {
-                if (sort.Count < bestChannel || bestChannel == -1)
-                {
-                    bestChannel = sort.Count;
-                    bestRemainder = sort[sort.Count - 1].fill;
-                    winner.Clear();
-                    winner.Add(counter);
+                
+                List<int> temp = new List<int>() { };
+                best = -1f;
 
-                }
-                else if (sort.Count == bestChannel)
+                int counter = 0;
+                foreach (List<Channel> sort in allSorts)
                 {
-                    if (sort[sort.Count - 1].fill < bestRemainder)
+                    if (!placed.Contains(sort))
                     {
-                        bestRemainder = sort[sort.Count - 1].fill;
-                        winner.Clear();
-                        winner.Add(counter);
+                        Debug.Log(sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize));
+                        if (best < 0 || (sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize)) < best)
+                        {
+
+                            temp.Clear();
+                            temp.Add(counter);
+                            best = sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize);
+
+                        }
+                        else if ((sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize)) == best)
+                        {
+                            temp.Add(counter);
+                        }
                     }
-                    else if(sort[sort.Count - 1].fill == bestRemainder)
-                    {
-                        winner.Add(counter);
-                    }
+                    counter++;
                 }
-                counter++;
-            }
-
-
-            foreach(int w in winner)
-            {
-                scoreboard[w] += 1;
-            }
-
-
-            if (winner.Contains(4))
-            {
-                foreach(Channel c in greedyV2Result)
+                foreach (int s in temp)
                 {
-                    c.displayChannel();
+                    placed.Add(allSorts[s]);
+                    Debug.Log(s);
+                    scoreboard[s] += place;
+                    
                 }
+                place--;
 
-                foreach (Channel c in reverseV2Result)
-                    c.displayChannel();
             }
         }
 
+        for(int i =  0; i <scoreboard.Count; i++)
+        {
+            scoreboard[i] = scoreboard[i] / testCount;
+        }
+
+        float testEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
 
         Debug.Log("Greedy: " + scoreboard[0] + "    GreedyV2: " + scoreboard[1] + "    Snake: " + scoreboard[2] + "    Reverse Fill: " + scoreboard[3] + "    ReverseV2 Fill: " + scoreboard[4]);
+        Debug.Log(testEndTime - testStartTime);
 
 
     }
