@@ -18,146 +18,146 @@ public class main : MonoBehaviour
 
     void Start()
     {
-
-        int run = 0;
-        float deviation = 0.2f + (0.8f * (run/20f));
-        float topBound = 8;
-        float bottomBound = 2;
-
-        int cycles = 20;
-
-
-
-        string final = "";
-
-
-        float ide = bottomBound;
-        for (int change = 0; change <= cycles; change ++)
+        string finalfinal = "";
+        for(int run = 11; run<=20; run++)
         {
+            float deviation = 0.2f + (0.8f * (run / 20f));
+            float topBound = 8;
+            float bottomBound = 2;
 
-            float difference = 10 - (Mathf.Abs(ide-5f));
-
-            float min = ide-(difference*deviation);
-            float max  = ide+(difference*deviation);
-
-            int testCount = 1000;
+            int cycles = 20;
 
 
-            List<float> scoreboard = new List<float>() { 0, 0, 0, 0, 0 };
-            float testStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
 
-            for (int test = 0; test < testCount; test++)
+            string final = "";
+
+
+            float ide = bottomBound;
+            for (int change = 0; change <= cycles; change++)
             {
-                defaultSize = 10;
-                fullList = new List<Show>();
-                for (int i = 0; i < 20; i++)
+                ide = bottomBound + ((topBound - bottomBound) * ((float)change / (float)cycles));
+
+                float difference = 10 - (Mathf.Abs(ide - 5f));
+
+                float min = ide - (difference * deviation);
+                float max = ide + (difference * deviation);
+
+                int testCount = 1500;
+
+
+                List<float> scoreboard = new List<float>() { 0, 0, 0, 0, 0 };
+                float testStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+                for (int test = 0; test < testCount; test++)
                 {
-                    fullList.Add(new Show(i.ToString(), UnityEngine.Random.Range(min, max), Color.red));
-                }
-
-                fullList = sortShows(fullList, 0, fullList.Count - 1);
-
-
-                float greedyStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-                List<Channel> greedyResult = Greedy(fullList);
-                float greedyEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-
-
-
-                float greedyV2StartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-                List<Channel> greedyV2Result = GreedyV2();
-                float greedyV2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-
-
-                float snakeStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-                List<Channel> snakeResult = Snake(fullList);
-                float snake2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-
-
-                float reverseStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-                List<Channel> reverseResult = ReverseFill(fullList);
-                float reverseEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-
-
-                float reverseV2StartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-                List<Channel> reverseV2Result = ReverseFillV2(fullList);
-                float reverseV2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-
-
-                // Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + Math.Round(greedyEndTime - greedyStartTime, 5) + " seconds  GreedyV2: " + greedyV2Result.Count + " channels in " + Math.Round((greedyV2EndTime - greedyV2StartTime), 5) + " seconds    Snake: " + snakeResult.Count + " channels in " + Math.Round((snake2EndTime - snakeStartTime), 5) + " seconds   Reverse Fill: " + reverseResult.Count + " channels in " + Math.Round((reverseEndTime - reverseStartTime), 5) + " seconds   Reverse Fill V2: " + reverseV2Result.Count + " channels in " + Math.Round((reverseV2EndTime - reverseV2StartTime), 5) + " seconds");
-
-
-                List<List<Channel>> allSorts = new List<List<Channel>>() { greedyResult, greedyV2Result, snakeResult, reverseResult, reverseV2Result };
-
-                //int bestChannel = -1;
-                //float bestRemainder = -1;
-
-                //int counter = 0;
-
-
-
-
-                float best;
-                int place = 4;
-
-                List<List<Channel>> placed = new List<List<Channel>>() { };
-                while (placed.Count < 5)
-                {
-
-                    List<int> temp = new List<int>() { };
-                    best = -1f;
-
-                    int counter = 0;
-                    foreach (List<Channel> sort in allSorts)
+                    defaultSize = 10;
+                    fullList = new List<Show>();
+                    for (int i = 0; i < 20; i++)
                     {
-                        if (!placed.Contains(sort))
+                        fullList.Add(new Show(i.ToString(), UnityEngine.Random.Range(min, max), Color.red));
+                    }
+
+                    fullList = sortShows(fullList, 0, fullList.Count - 1);
+
+
+                    float greedyStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+                    List<Channel> greedyResult = Greedy(fullList);
+                    float greedyEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+
+
+                    float greedyV2StartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+                    List<Channel> greedyV2Result = GreedyV2();
+                    float greedyV2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+
+                    float snakeStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+                    List<Channel> snakeResult = Snake(fullList);
+                    float snake2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+
+                    float reverseStartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+                    List<Channel> reverseResult = ReverseFill(fullList);
+                    float reverseEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+
+                    float reverseV2StartTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+                    List<Channel> reverseV2Result = ReverseFillV2(fullList);
+                    float reverseV2EndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+
+                    // Debug.Log("Greedy: "+ greedyResult.Count + " channels in " + Math.Round(greedyEndTime - greedyStartTime, 5) + " seconds  GreedyV2: " + greedyV2Result.Count + " channels in " + Math.Round((greedyV2EndTime - greedyV2StartTime), 5) + " seconds    Snake: " + snakeResult.Count + " channels in " + Math.Round((snake2EndTime - snakeStartTime), 5) + " seconds   Reverse Fill: " + reverseResult.Count + " channels in " + Math.Round((reverseEndTime - reverseStartTime), 5) + " seconds   Reverse Fill V2: " + reverseV2Result.Count + " channels in " + Math.Round((reverseV2EndTime - reverseV2StartTime), 5) + " seconds");
+
+
+                    List<List<Channel>> allSorts = new List<List<Channel>>() { greedyResult, greedyV2Result, snakeResult, reverseResult, reverseV2Result };
+
+                    //int bestChannel = -1;
+                    //float bestRemainder = -1;
+
+                    //int counter = 0;
+
+
+
+
+                    float best;
+                    int place = 4;
+
+                    List<List<Channel>> placed = new List<List<Channel>>() { };
+                    while (placed.Count < 5)
+                    {
+
+                        List<int> temp = new List<int>() { };
+                        best = -1f;
+
+                        int counter = 0;
+                        foreach (List<Channel> sort in allSorts)
                         {
-
-                            if (best < 0 || (sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize)) < best)
+                            if (!placed.Contains(sort))
                             {
 
-                                temp.Clear();
-                                temp.Add(counter);
-                                best = sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize);
+                                if (best < 0 || (sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize)) < best)
+                                {
 
+                                    temp.Clear();
+                                    temp.Add(counter);
+                                    best = sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize);
+
+                                }
+                                else if ((sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize)) == best)
+                                {
+                                    temp.Add(counter);
+                                }
                             }
-                            else if ((sort.Count - 1f + (sort[sort.Count - 1].fill / (float)defaultSize)) == best)
-                            {
-                                temp.Add(counter);
-                            }
+                            counter++;
                         }
-                        counter++;
+                        foreach (int s in temp)
+                        {
+                            placed.Add(allSorts[s]);
+
+                            scoreboard[s] += place;
+
+                        }
+                        place--;
+
                     }
-                    foreach (int s in temp)
-                    {
-                        placed.Add(allSorts[s]);
-
-                        scoreboard[s] += place;
-
-                    }
-                    place--;
-
                 }
+
+                for (int i = 0; i < scoreboard.Count; i++)
+                {
+                    scoreboard[i] = scoreboard[i] / testCount;
+                }
+
+                float testEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
+
+                //final += ("Greedy: " + scoreboard[0] + "    GreedyV2: " + scoreboard[1] + "    Snake: " + scoreboard[2] + "    Reverse Fill: " + scoreboard[3] + "    ReverseV2 Fill: " + scoreboard[4] + "\n");
+                final += (Math.Round(ide, 4) + "," + Math.Round(deviation, 4) + "," + scoreboard[0] + "," + scoreboard[1] + "," + scoreboard[2] + "," + scoreboard[3] + "," + scoreboard[4] + "\n");
+
             }
 
-            for (int i = 0; i < scoreboard.Count; i++)
-            {
-                scoreboard[i] = scoreboard[i] / testCount;
-            }
-
-            float testEndTime = DateTime.Now.Millisecond / 1000f + DateTime.Now.Second;
-
-
-            //final += ("Greedy: " + scoreboard[0] + "    GreedyV2: " + scoreboard[1] + "    Snake: " + scoreboard[2] + "    Reverse Fill: " + scoreboard[3] + "    ReverseV2 Fill: " + scoreboard[4] + "\n");
-
-
-            ide = bottomBound + ((topBound - bottomBound) * ((float)change /(float)cycles));
-
+            finalfinal += final;
         }
 
-        
-        
-        Debug.Log(final);
+        Debug.Log(finalfinal);
 
     }
 
