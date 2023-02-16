@@ -19,7 +19,7 @@ public class main : MonoBehaviour
     void Start()
     {
         string finalfinal = "";
-        for(int run = 11; run<=20; run++)
+        for(int run = 0; run<=10; run++)
         {
             float deviation = 0.2f + (0.8f * (run / 20f));
             float topBound = 8;
@@ -52,7 +52,7 @@ public class main : MonoBehaviour
                 {
                     defaultSize = 10;
                     fullList = new List<Show>();
-                    for (int i = 0; i < 20; i++)
+                    for (int i = 0; i < 30; i++)
                     {
                         fullList.Add(new Show(i.ToString(), UnityEngine.Random.Range(min, max), Color.red));
                     }
